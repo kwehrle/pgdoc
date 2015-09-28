@@ -52,85 +52,36 @@ namespace MixERP.Net.Utilities.PgDoc.Helpers
                 return null;
             }
 
-            DirectoryInfo directoryInfo = new DirectoryInfo(applicationPath).Parent;
-
-            if (directoryInfo != null && directoryInfo.Parent != null)
-            {
-                string executingFolder = directoryInfo.Parent.FullName;
-                return executingFolder;
-            }
-
-            return string.Empty;
-        }
+			var directoryInfo = new DirectoryInfo(applicationPath).Parent;
+			return (directoryInfo == null || directoryInfo.Parent == null) ? string.Empty : directoryInfo.Parent.FullName;
+		}
 
         internal static bool IsOutputDirectoryEmpty()
         {
-            if (!Directory.Exists(Program.OutputDirectory))
-            {
-                return true;
-            }
-
-            return !Directory.EnumerateFileSystemEntries(Program.OutputDirectory).Any();
+            return (!Directory.Exists(Program.OutputDirectory)) ? true : !Directory.EnumerateFileSystemEntries(Program.OutputDirectory).Any();
         }
 
         internal static string ReadFile(string relativePath)
         {
-            string root = GetApplicationRootPath();
-            string path = root + relativePath;
-
-            if (File.Exists(path))
-            {
-                return File.ReadAllText(path);
-            }
-
-            return string.Empty;
+            string path = string.Format("{0}{1}", GetApplicationRootPath(), relativePath);
+            return File.Exists(path) ? File.ReadAllText(path) : string.Empty;
         }
 
 
         internal static string ReadSqlResource(string name)
         {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                return string.Empty;
-            }
-
-            string resourceName = "MixERP.Net.Utilities.PgDoc.Configs.SQL." + name;
-
-            Assembly assembly = Assembly.GetExecutingAssembly();
-
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            {
-                if (stream != null)
-                {
-                    using (StreamReader reader = new StreamReader(stream))
-                    {
-                        string result = reader.ReadToEnd();
-
-                        return result;
-                    }
-                }
-            }
-
-            return string.Empty;
+			return ReadResource(string.Format("MixERP.Net.Utilities.PgDoc.Configs.SQL.{0}", name));
         }
 
         internal static string ReadResource(string resourceName)
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            {
-                if (stream != null)
-                {
-                    using (StreamReader reader = new StreamReader(stream))
-                    {
-                        string result = reader.ReadToEnd();
-
-                        return result;
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName)) {
+                if (stream != null) {
+                    using (StreamReader reader = new StreamReader(stream)) {
+                        return reader.ReadToEnd();
                     }
                 }
             }
-
             return string.Empty;
         }
 
@@ -146,46 +97,40 @@ namespace MixERP.Net.Utilities.PgDoc.Helpers
             }
 
 
-            List<string> matches = HtmlHelper.GetMatch(content);
-            foreach (string match in matches)
-            {
-                string comment = HtmlHelper.RemoveComment(match);
+			//List<string> matches = HtmlHelper.GetMatch(content);
+			//foreach (string match in matches)
+			//{
+			//	string comment = HtmlHelper.RemoveComment(match);
 
-                if (!comment.StartsWith("DisqusLoader"))
-                {
-                    continue;
-                }
+			//	if (!comment.StartsWith("DisqusLoader"))
+			//	{
+			//		continue;
+			//	}
 
-                comment = comment.ReplaceFirst("DisqusLoader", "");
-                comment = comment.Replace("[DisqusShortName]", Program.DisqusName);
+			//	comment = comment.ReplaceFirst("DisqusLoader", "");
+			//	comment = comment.Replace("[DisqusShortName]", Program.DisqusName);
 
-                content = content.Replace(match, comment);
-            }
+			//	content = content.Replace(match, comment);
+			//}
 
             File.WriteAllText(file.FullName, content);
         }
 
         internal static void WriteResourceToOutPutDirectory(string resourceName, string fileName)
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName)) {
+				if (stream != null) {
+					string templatePath = Path.Combine(Program.OutputDirectory, fileName);
+					FileInfo file = new FileInfo(templatePath);
 
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            {
-                if (stream == null) return;
-                
-                string templatePath = Path.Combine(Program.OutputDirectory, fileName);
+					if (file.Directory != null) {
+						file.Directory.Create();
+					}
 
-                FileInfo file = new FileInfo(templatePath);
-
-                if (file.Directory != null)
-                {
-                    file.Directory.Create();
-                }
-
-                using (Stream output = File.Create(file.FullName))
-                {
-                    CopyStream(stream, output);
-                }
+					using (Stream output = File.Create(file.FullName)) {
+						CopyStream(stream, output);
+					}
+				}
             }
         }
     }

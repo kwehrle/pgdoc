@@ -27,20 +27,45 @@ namespace MixERP.Net.Utilities.PgDoc.Helpers
     {
         internal static List<string> GetMatch(string content)
         {
-            if (string.IsNullOrWhiteSpace(content))
+            if (!string.IsNullOrWhiteSpace(content))
             {
-                return null;
-            }
+				var doc = new HtmlDocument();
+				doc.LoadHtml(content);
 
-            HtmlDocument doc = new HtmlDocument();
-            doc.LoadHtml(content);
+				var nodes = doc.DocumentNode.SelectNodes("//comment()");
 
-            HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//comment()");
+				if (nodes != null) {
+					return (from node in nodes where !node.InnerText.StartsWith("<!DOCTYPE html>") select node.InnerText).ToList();
+				}
+			}
 
-            return
-                (from node in nodes where !node.InnerText.StartsWith("<!DOCTYPE html>") select node.InnerText).ToList();
+			return null;
+
         }
 
+		/// <summary>
+		/// find div with a specific id and remove it
+		/// </summary>
+		/// <param name="content"></param>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		internal static string RemoveDiv(string content, string id)
+		{
+			if (!string.IsNullOrWhiteSpace(content)) {
+				var doc = new HtmlDocument();
+				doc.LoadHtml(content);
+
+				var node = doc.DocumentNode.SelectSingleNode("//div[@id='" + id + "']");
+
+				if (node != null) {
+					node.ParentNode.RemoveChild(node); //node.Remove();
+					return doc.DocumentNode.OuterHtml;
+				}
+			}
+
+			return content;
+
+		}
         internal static string RemoveComment(string content)
         {
             return content.Replace("<!--", "").Replace("-->", "").Replace(Environment.NewLine, "").Trim();

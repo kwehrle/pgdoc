@@ -76,3 +76,19 @@ Use a postgres regular expression to decide, which schemas should **not** be doc
 ```
 MixERP.Net.Utilities.PgDoc.exe ... -xs=tmp_.*
 ```
+
+**-ow: overwrite existing folder**
+
+user is not asked as in standard pgDoc
+
+**-re: remove empty areas**
+
+If e.g. no types are definied in the database, the complete area is hidden i.e. excluded on generation. Empty tables are also suppressed.
+
+**-t: template set**
+
+Under Configs/Template you can define different template sets as directories and so can  easily switch between them. So you're able to define one for Twitter bootstrap and one for an alternative library
+
+**Important: ** This version of pgdoc no longer supports the original placeholder syntax (square brackets, `[db.comment]`). All placeholders must use double curly brackets: `{{db.comment}}`
+
+

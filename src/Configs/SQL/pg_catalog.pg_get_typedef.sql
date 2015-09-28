@@ -39,16 +39,11 @@ BEGIN
             CASE WHEN COALESCE(c.collname::text, 'default') = 'default' THEN '' ELSE ' COLLATE ' || nspc.nspname || '.' || collname || '' END
         ) as cols
     FROM pg_attribute att
-    JOIN pg_type t 
-    ON t.oid=atttypid
-    JOIN pg_namespace nsp 
-    ON t.typnamespace=nsp.oid
-    LEFT OUTER JOIN pg_type b 
-    ON t.typelem=b.oid
-    LEFT OUTER JOIN pg_collation c 
-    ON att.attcollation=c.oid
-    LEFT OUTER JOIN pg_namespace nspc 
-    ON c.collnamespace=nspc.oid
+    JOIN pg_type t ON t.oid=atttypid
+    JOIN pg_namespace nsp ON t.typnamespace=nsp.oid
+    LEFT OUTER JOIN pg_type b ON t.typelem=b.oid
+    LEFT OUTER JOIN pg_collation c ON att.attcollation=c.oid
+    LEFT OUTER JOIN pg_namespace nspc ON c.collnamespace=nspc.oid
     WHERE att.attrelid=$1
     ORDER by attnum
     )), E',\n');

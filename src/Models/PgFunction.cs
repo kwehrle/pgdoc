@@ -18,17 +18,51 @@ along with MixERP.  If not, see <http://www.gnu.org/licenses/>.
 ***********************************************************************************/
 namespace MixERP.Net.Utilities.PgDoc.Models
 {
-    public sealed class PgFunction
+    public class PgFunction : PgBase
     {
-        public string Arguments { get; set; }
+		public string Arguments { get; set; }
         public string Description { get; set; }
         public string FunctionType { get; set; }
-        public string Name { get; set; }
         public string Owner { get; set; }
         public string ResultType { get; set; }
         public long RowNumber { get; set; }
-        public string SchemaName { get; set; }
         public string FunctionDefinition { get; set; }
-        public string FunctionOid { get; set; }
+        public int oid { get; set; }
+
+		public PgFunction() { }
+
+		override public PgBase Convert(System.Data.DataRow row)
+		{
+            oid = Conversion.TryCastInteger(row["oid"]);
+            FunctionDefinition = Conversion.TryCastString(row["definition"]);
+            RowNumber = Conversion.TryCastLong(row["row_number"]);
+            Name = Conversion.TryCastString(row["function_name"]);
+            SchemaName = Conversion.TryCastString(row["object_schema"]);
+            Arguments = Conversion.TryCastString(row["arguments"]);
+            ResultType = Conversion.TryCastString(row["result_type"]);
+            FunctionType = Conversion.TryCastString(row["function_type"]);
+            Owner = Conversion.TryCastString(row["owner"]);
+			Description = Conversion.TryCastString(row["description"]);
+			return this as PgBase;
+		}
+
+		override public string Parse(string template)
+		{
+			return template
+				.Replace("{{fct.name}}", Name)
+                .Replace("{{fct.triggerSchema}}", SchemaName)
+                .Replace("{{fct.schema}}", SchemaName)
+                .Replace("{{fct.arguments}}", Arguments.Replace(", ", "<br />"))
+                .Replace("{{fct.rowNumber}}", RowNumber.ToString())
+                .Replace("{{fct.owner}}", Owner)
+                .Replace("{{fct.resultType}}", ResultType)
+                .Replace("{{fct.functionType}}", FunctionType)
+                .Replace("{{fct.oid}}", oid.ToString())
+                .Replace("{{fct.definition}}", FunctionDefinition)
+                .Replace("{{fct.description}}", md.Transform(Description));
+		}
     }
+
+	public class PgTriggerFunction : PgFunction { 
+	}
 }

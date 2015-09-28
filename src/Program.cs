@@ -17,33 +17,38 @@ You should have received a copy of the GNU General Public License
 along with MixERP.  If not, see <http://www.gnu.org/licenses/>.
 ***********************************************************************************/
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using MixERP.Net.Utilities.PgDoc.Generators;
 using MixERP.Net.Utilities.PgDoc.Helpers;
+using MixERP.Net.Utilities.PgDoc.Models;
 using MixERP.Net.Utilities.PgDoc.Parsers;
+using MixERP.Net.Utilities.PgDoc.Processors;
 
 namespace MixERP.Net.Utilities.PgDoc
 {
     internal class Program
     {
         internal static readonly string AppName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
-
+		internal static PgDatabase db; // a global Reference to the database object, important for PgSchema to filter its contents
         internal static string Database;
-		internal static int Port;
-		internal static string UserId;
+		internal static int Port = 5432;
+		internal static string UserId = "postgres";
 		internal static string Password;
-		internal static string Server;
+		internal static string Server = "localhost";
+		internal static string TemplateSet = "kwrl";
 
-        internal static string DisqusName;
-        internal static bool DeleteFilesBeforePublish;
+        //internal static string DisqusName;
+		internal static bool RemoveEmpty = false;
+        internal static bool Overwrite = false;
         internal static string OutputDirectory;
-		internal static string SchemaPattern = ".*"; // Regex-Pattern for schemas to include
+		internal static string SchemaPattern = "%"; // Regex-Pattern for schemas to include
 		internal static string xSchemaPattern = string.Empty; // Regex-Pattern for schemas to exclude
 		
-        internal static void Build(string[] args)
+        internal static bool Build(string[] args)
         {
             foreach (string argument in args)
             {
@@ -51,134 +56,143 @@ namespace MixERP.Net.Utilities.PgDoc
                 {
                     Server = ArgumentParser.Parse(argument, "-s");
 					ExtractPort();
+					continue;
                 }
 
                 if (argument.StartsWith("-d"))
                 {
                     Database = ArgumentParser.Parse(argument, "-d");
-                }
+					continue;
+				}
+				
+				if (argument.StartsWith("-ow")) {
+					Overwrite = true;
+					continue;
+				}
 
                 if (argument.StartsWith("-u"))
                 {
                     UserId = ArgumentParser.Parse(argument, "-u");
-                }
+					continue;
+				}
 
                 if (argument.StartsWith("-p"))
                 {
                     Password = ArgumentParser.Parse(argument, "-p");
-                }
+					continue;
+				}
 
                 if (argument.StartsWith("-o"))
                 {
                     OutputDirectory = ArgumentParser.Parse(argument, "-o");
-                }
+					continue;
+				}
 
-                if (argument.StartsWith("-q"))
-                {
-                    DisqusName = ArgumentParser.Parse(argument, "-q");
-                }
+				//if (argument.StartsWith("-q"))
+				//{
+				//	DisqusName = ArgumentParser.Parse(argument, "-q");
+				//}
+
+				if (argument.StartsWith("-re")) {
+					RemoveEmpty = true;
+					continue;
+				}
+
+				// kwrl: -t == template set to use for generating html (standard = mixerp)
+				if (argument.StartsWith("-t")){
+					TemplateSet = ArgumentParser.Parse(argument, "-t");
+					continue;
+				}
 
 				// kwrl: is == include schemata; format: "-is=RegExpPattern" sample: "-is=(public|def.*)
 				if (argument.StartsWith("-is")) {
 					SchemaPattern = ArgumentParser.Parse(argument, "-is");
+					continue;
 				}
 				if (argument.StartsWith("-xs")) {
 					xSchemaPattern = ArgumentParser.Parse(argument, "-xs");
+					continue;
 				}
-
-                if (!argument.StartsWith("-f")) continue;
-
-                string value = ArgumentParser.Parse(argument, "-f");
-
-                if (!string.IsNullOrWhiteSpace(value))
-                {
-                    Console.WriteLine("ERROR: Invalid value {0} for parameter \"-f\".", value);
-                    return;
-                }
-
-                DeleteFilesBeforePublish = true;
             }
 
 
             if (string.IsNullOrWhiteSpace(Server))
             {
                 Console.WriteLine("Invalid or missing parameter \"-s\" for PostgreSQL Server.");
-                return;
+                return false;
             }
 
             if (string.IsNullOrWhiteSpace(Database))
             {
                 Console.WriteLine("Invalid or missing parameter \"-d\" for PostgreSQL Database.");
-                return;
-            }
+				return false;
+			}
 
             if (string.IsNullOrWhiteSpace(UserId))
             {
                 Console.WriteLine("Invalid or missing parameter \"-u\" for PostgreSQL User.");
-                return;
-            }
+				return false;
+			}
 
             if (string.IsNullOrWhiteSpace(Password))
             {
                 Console.WriteLine("Invalid or missing parameter \"-p\" for PostgreSQL User Password.");
-                return;
-            }
+				return false;
+			}
 
             if (string.IsNullOrWhiteSpace(OutputDirectory))
             {
                 Console.WriteLine("Invalid or missing parameter \"-o\" for documentation output directory.");
-                return;
-            }
-
-
-            Run();
+				return false;
+			}
+			return true;
         }
 
-        internal static string ReadPassword()
-        {
-            string password = "";
+		//internal static string ReadPassword()
+		//{
+		//	string password = string.Empty;
 
-            ConsoleKeyInfo info = Console.ReadKey(true);
+		//	ConsoleKeyInfo info = Console.ReadKey(true);
 
-            while (info.Key != ConsoleKey.Enter)
-            {
-                if (info.Key != ConsoleKey.Backspace)
-                {
-                    Console.Write("*");
+		//	while (info.Key != ConsoleKey.Enter)
+		//	{
+		//		if (info.Key != ConsoleKey.Backspace)
+		//		{
+		//			Console.Write("*");
 
-                    password += info.KeyChar;
-                }
+		//			password += info.KeyChar;
+		//		}
 
-                else if (info.Key == ConsoleKey.Backspace)
-                {
-                    if (!string.IsNullOrEmpty(password))
-                    {
-                        // remove one character from the list of password characters
-                        password = password.Substring(0, password.Length - 1);
+		//		else if (info.Key == ConsoleKey.Backspace)
+		//		{
+		//			if (!string.IsNullOrEmpty(password))
+		//			{
+		//				// remove one character from the list of password characters
+		//				password = password.Substring(0, password.Length - 1);
 
-                        // get the location of the cursor
-                        int pos = Console.CursorLeft;
+		//				// get the location of the cursor
+		//				int pos = Console.CursorLeft;
 
-                        // move the cursor to the left by one character
-                        Console.SetCursorPosition(pos - 1, Console.CursorTop);
+		//				// move the cursor to the left by one character
+		//				Console.SetCursorPosition(pos - 1, Console.CursorTop);
 
-                        // replace it with space
-                        Console.Write(" ");
+		//				// replace it with space
+		//				Console.Write(" ");
 
-                        // move the cursor to the left by one character again
-                        Console.SetCursorPosition(pos - 1, Console.CursorTop);
-                    }
-                }
+		//				// move the cursor to the left by one character again
+		//				Console.SetCursorPosition(pos - 1, Console.CursorTop);
+		//			}
+		//		}
 
-                info = Console.ReadKey(true);
-            }
+		//		info = Console.ReadKey(true);
+		//	}
 
 
-            // add a new line because user pressed enter at the end of their password
-            Console.WriteLine();
+		//	// add a new line because user pressed enter at the end of their password
+		//	Console.WriteLine();
 
-            return password;
-        }
+		//	return password;
+		//}
 
         private static bool WriteQuestion(string question)
         {
@@ -200,70 +214,67 @@ namespace MixERP.Net.Utilities.PgDoc
 
         private static void DisplayHelpInfo()
         {
-            Console.WriteLine("Generates HTML documentation from PostgreSQL database.");
-            Console.WriteLine();
-            Console.WriteLine("Usage: {0} -s=[server[:port]] -d=[database] -u=[pg_user] -p=[pwd] -o=[output_dir]", AppName);
-            Console.WriteLine();
+            Console.WriteLine("Generates HTML documentation from PostgreSQL database.\n");
+            Console.WriteLine("Usage: {0} -s=[server[:port]] -d=[database] -u=[pg_user] -p=[pwd] -o=[output_dir] -is=[include_schemas] -xs=[exclude_schemas] -re\n", AppName);
+			//Console.WriteLine("WARNING: No parameter supplied.");
+			//Console.WriteLine();
 
-            Console.WriteLine("WARNING: No parameter supplied.");
-            Console.WriteLine();
+			//if (!WriteQuestion("Would you like to provide parameters now? [Yes/No*]"))
+			//{
+			//	Console.WriteLine();
+			//	Console.WriteLine("No");
+			//	Console.WriteLine();
+			//	return;
+			//}
 
-            if (!WriteQuestion("Would you like to provide parameters now? [Yes/No*]"))
-            {
-                Console.WriteLine();
-                Console.WriteLine("No");
-                Console.WriteLine();
-                return;
-            }
+			//Console.WriteLine();
+			//Console.WriteLine("Yes");
+			//Server = GetParameter("PostgreSQL Server host name or IP address:", "localhost");
+			//ExtractPort();
 
-            Console.WriteLine();
-            Console.WriteLine("Yes");
-            Server = GetParameter("PostgreSQL Server host name or IP address:", "localhost");
-			ExtractPort();
+			//Database = GetParameter("Enter the name of your PostgreSQL Database:", "mixerp");
+			//UserId = GetParameter("Enter PostgreSQL Database UserId:", "postgres");
+			//Password = GetPassword();
+			//string path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\" +
+			//			  Database + "-docs";
+			//OutputDirectory = GetParameter("Output directory to generate documentation to:", path);
 
-            Database = GetParameter("Enter the name of your PostgreSQL Database:", "mixerp");
-            UserId = GetParameter("Enter PostgreSQL Database UserId:", "postgres");
-            Password = GetPassword();
-            string path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\" +
-                          Database + "-docs";
-            OutputDirectory = GetParameter("Output directory to generate documentation to:", path);
-
-            Run();
+			//Run();
         }
 
-        private static string GetParameter(string message, string defaultValue)
-        {
-            Console.WriteLine();
-            Console.Write(message);
+		//private static string GetParameter(string message, string defaultValue)
+		//{
+		//	Console.WriteLine();
+		//	Console.Write(message);
 
-            if (!string.IsNullOrWhiteSpace(defaultValue))
-            {
-                SendKeys.SendWait(defaultValue);
-            }
+		//	if (!string.IsNullOrWhiteSpace(defaultValue))
+		//	{
+		//		SendKeys.SendWait(defaultValue);
+		//	}
 
-            string parameter = Console.ReadLine();
+		//	string parameter = Console.ReadLine();
 
-            if (string.IsNullOrWhiteSpace(parameter))
-            {
-                GetParameter(message, defaultValue);
-            }
+		//	if (string.IsNullOrWhiteSpace(parameter))
+		//	{
+		//		GetParameter(message, defaultValue);
+		//	}
 
-            return parameter;
-        }
+		//	return parameter;
+		//}
 
-        private static string GetPassword()
-        {
-            Console.WriteLine();
-            Console.Write("Enter password for user \"{0}\":", UserId);
-            string password = ReadPassword();
+		//private static string GetPassword()
+		//{
+		//	Console.WriteLine();
+		//	Console.Write("Enter password for user \"{0}\":", UserId);
+		//	string password = ReadPassword();
 
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                GetPassword();
-            }
+		//	if (string.IsNullOrWhiteSpace(password))
+		//	{
+		//		GetPassword();
+		//	}
 
-            return password;
-        }
+		//	return password;
+		//}
 
         [STAThread]
         private static void Main(string[] args)
@@ -271,54 +282,62 @@ namespace MixERP.Net.Utilities.PgDoc
             AppDomain.CurrentDomain.AssemblyResolve += DependencyHandler.ResolveEventHandler;
 			//AppName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
 
-            if ((args.Length.Equals(0)) ||
-                args.Length.Equals(1) && (args[0].Contains("/?") || args[0].Contains("--help")))
-            {
-                DisplayHelpInfo();
-                Console.ReadKey();
-                return;
-            }
+			if ((args.Length.Equals(0)) ||
+				args.Length.Equals(1) && (args[0].Contains("/?") || args[0].Contains("--help"))) {
+				DisplayHelpInfo();
+			}
+			else {
+				if (Build(args)) {
+					Run();
+				}
+			}
 
-            Build(args);
-            Console.WriteLine();
-            Console.WriteLine("Press any key to continue ...");
+#if DEBUG
+            Console.WriteLine("\nPress any key to continue ...");
             Console.ReadKey();
+#endif
         }
+
+		private static void CheckDirectory() {
+			if (!FileHelper.IsOutputDirectoryEmpty()) {
+				if (!Program.Overwrite) {
+					Console.WriteLine("WARNING: The output directory is not empty.");
+					bool result = WriteQuestion("Do you want to empty this directory?[Yes/No*]");
+
+					if (!result) {
+						throw new Exception("");
+					}
+				}
+				FileHelper.EmptyOutputDirectory();
+			}
+			Console.WriteLine("{0} initialized.", AppName);
+		}
 
         private static void Run()
         {
-            if (!FileHelper.IsOutputDirectoryEmpty())
-            {
-                if (!DeleteFilesBeforePublish)
-                {
-                    Console.WriteLine("WARNING: The output directory is not empty.");
-                    bool result = WriteQuestion("Do you want empty this directory?[Yes/No*]");
-
-                    if (!result)
-                    {
-                        Console.WriteLine("ERROR: Cannot create documentation.");
-                        return;
-                    }
-                }
-
-                FileHelper.EmptyOutputDirectory();
-            }
-
-            Console.WriteLine("{0} initialized.", AppName);
-
             try
             {
-                Runner.Run();
-                Console.WriteLine();
-                Console.WriteLine("{0} completed.", AppName);
+				// 1. Step: Read all Information of the selected Database tailored to the desired schemas
+				Processor<PgType>.AddPgTypeDefinitionFunction();
+				Program.db = new PgDatabase(Program.SchemaPattern, Program.xSchemaPattern) {
+					Name = Program.Database
+				};
+
+				// 2. Step: now I could probably write and will check if directory is empty or not
+				CheckDirectory();
+
+				// 3. Step: Generate HTML-Documentation with Templates
+				Console.WriteLine("MixERP Documentation Generator.");
+				//StaticWriter.InitMaster(Program.db);
+
+				new DatabaseWriter().Run(Program.db);
+				new AssetWriter();
+
+                Console.WriteLine("\n{0} completed.", AppName);
             }
             catch (Exception ex)
             {
-                Console.WriteLine();
-                Console.WriteLine("ERROR: Cannot create documentation.");
-                Console.WriteLine();
-                Console.Write(ex.Message);
-                Console.WriteLine();
+                Console.WriteLine("\nERROR: Cannot create documentation:\n{0}", ex.Message);
             }
         }
     }

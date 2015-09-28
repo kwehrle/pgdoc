@@ -19,11 +19,6 @@ along with MixERP.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Globalization;
-using System.IO;
-using System.Net.Mime;
-using System.Security.Cryptography;
-using System.Text;
-using System.Windows.Forms.VisualStyles;
 
 namespace MixERP.Net.Utilities.PgDoc
 {
@@ -44,12 +39,7 @@ namespace MixERP.Net.Utilities.PgDoc
 
         public static bool IsEmptyDate(DateTime date)
         {
-            if (date.Equals(DateTime.MinValue))
-            {
-                return true;
-            }
-
-            return false;
+			return (date.Equals(DateTime.MinValue));
         }
 
         public static bool IsNumeric(string value)
@@ -66,21 +56,13 @@ namespace MixERP.Net.Utilities.PgDoc
             {
                 if (value is string)
                 {
-                    if (value.ToString().ToUpperInvariant().Equals("YES"))
-                    {
-                        return true;
-                    }
-
-                    if (value.ToString().ToUpperInvariant().Equals("TRUE"))
+                    if (value.ToString().ToUpperInvariant().Equals("YES") || value.ToString().ToUpperInvariant().Equals("TRUE"))
                     {
                         return true;
                     }
                 }
 
-                if (bool.TryParse(value.ToString(), out retVal))
-                {
-                    return retVal;
-                }
+				bool.TryParse(value.ToString(), out retVal);
             }
 
             return retVal;
@@ -99,7 +81,6 @@ namespace MixERP.Net.Utilities.PgDoc
                 {
                     return (DateTime) value;
                 }
-
 
                 return Convert.ToDateTime(value, CultureInfo.CurrentCulture);
             }
@@ -122,13 +103,7 @@ namespace MixERP.Net.Utilities.PgDoc
                     return (decimal) value;
                 }
 
-                string numberToParse = value.ToString();
-
-
-                if (decimal.TryParse(numberToParse, NumberStyles.Any, CultureInfo.CurrentCulture, out retVal))
-                {
-                    return retVal;
-                }
+				decimal.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out retVal);
             }
 
             return retVal;
@@ -145,12 +120,7 @@ namespace MixERP.Net.Utilities.PgDoc
                     return (double) value;
                 }
 
-                string numberToParse = value.ToString();
-
-                if (double.TryParse(numberToParse, NumberStyles.Any, CultureInfo.CurrentCulture, out retVal))
-                {
-                    return retVal;
-                }
+				double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out retVal);
             }
 
             return retVal;
@@ -175,13 +145,7 @@ namespace MixERP.Net.Utilities.PgDoc
                     return (int) value;
                 }
 
-
-                string numberToParse = value.ToString();
-
-                if (int.TryParse(numberToParse, NumberStyles.Any, CultureInfo.CurrentCulture, out retVal))
-                {
-                    return retVal;
-                }
+				int.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out retVal);
             }
 
             return retVal;
@@ -198,12 +162,7 @@ namespace MixERP.Net.Utilities.PgDoc
                     return (long) value;
                 }
 
-                string numberToParse = value.ToString();
-
-                if (long.TryParse(numberToParse, NumberStyles.Any, CultureInfo.CurrentCulture, out retVal))
-                {
-                    return retVal;
-                }
+				long.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out retVal);
             }
 
             return retVal;
@@ -220,12 +179,7 @@ namespace MixERP.Net.Utilities.PgDoc
                     return (short) value;
                 }
 
-                string numberToParse = value.ToString();
-
-                if (short.TryParse(numberToParse, NumberStyles.Any, CultureInfo.CurrentCulture, out retVal))
-                {
-                    return retVal;
-                }
+				short.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out retVal);
             }
 
             return retVal;
@@ -242,56 +196,27 @@ namespace MixERP.Net.Utilities.PgDoc
                     return (float) value;
                 }
 
-                string numberToParse = value.ToString();
-
-                if (float.TryParse(numberToParse, NumberStyles.Any, CultureInfo.CurrentCulture, out retVal))
-                {
-                    return retVal;
-                }
+				float.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out retVal);
             }
-
             return retVal;
         }
 
         public static string TryCastString(object value)
         {
-            if (value != null)
+			if (value == null)
+				return string.Empty;
+
+            if (value is bool)
             {
-                if (value is bool)
-                {
-                    if (Convert.ToBoolean(value, CultureInfo.InvariantCulture))
-                    {
-                        return "true";
-                    }
-
-                    return "false";
-                }
-
-                if (value == DBNull.Value)
-                {
-                    return string.Empty;
-                }
-
-                string retVal = value.ToString();
-                return retVal;
+				return (Convert.ToBoolean(value, CultureInfo.InvariantCulture)) ? "true" : "false";
             }
 
-            return string.Empty;
-        }
+            return (value == DBNull.Value) ? string.Empty: value.ToString();
+    }
 
         public static DateTime? TryCastNullableDate(object value)
         {
-            if (value == null || value == DBNull.Value)
-            {
-                return null;
-            }
-
-            if (string.IsNullOrWhiteSpace(value.ToString()))
-            {
-                return null;
-            }
-
-            return Convert.ToDateTime(value, CultureInfo.CurrentCulture);
+            return (value == null || value == DBNull.Value || string.IsNullOrWhiteSpace(value.ToString())) ? (DateTime?) null : Convert.ToDateTime(value, CultureInfo.CurrentCulture);
         }
     }
 }

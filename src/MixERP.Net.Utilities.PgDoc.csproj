@@ -13,6 +13,22 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>C:\Users\Knut\Documents\www.Publish\pgdoc\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,10 +56,32 @@
   <PropertyGroup>
     <ApplicationIcon>postgresql.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>747BC93A91DD0B05B461665B99C570AE9F1EF846</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>MixERP.Net.Utilities.PgDoc_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>false</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Dependencies\HTMLAgilityPack\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="MarkdownDeep, Version=1.5.5082.29984, Culture=neutral, PublicKeyToken=65640b2d9fe5ac0e, processorArchitecture=MSIL">
+      <HintPath>packages\MarkdownDeep.NET-Signed.1.5\lib\.NetFramework 3.5\MarkdownDeep.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Mono.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -65,91 +103,35 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Conversion.cs" />
-    <Compile Include="Processors\CheckConstraintProcessor.cs" />
-    <Compile Include="Processors\ColumnProcessor.cs" />
-    <Compile Include="Processors\ConnectionTester.cs" />
-    <Compile Include="Processors\DbProcessor.cs" />
-    <Compile Include="Processors\FunctionProcessor.cs" />
-    <Compile Include="Processors\IndexProcessor.cs" />
-    <Compile Include="Processors\MaterializedViewProcessor.cs" />
-    <Compile Include="Processors\SchemaProcessor.cs" />
-    <Compile Include="Processors\SequenceProcessor.cs" />
-    <Compile Include="Processors\TableProcessor.cs" />
-    <Compile Include="Processors\TableTriggerProcessor.cs" />
-    <Compile Include="Processors\TriggerFunctionProcessor.cs" />
-    <Compile Include="Processors\TypeProcessor.cs" />
-    <Compile Include="Processors\ViewProcessor.cs" />
+    <Compile Include="Generators\BaseWriter.cs" />
+    <Compile Include="Models\PgDatabase.PgSetting.cs" />
+    <Compile Include="Models\PgBase.cs" />
+    <Compile Include="Models\PgTable.PgForeignKey.cs" />
+    <Compile Include="Parsers\Parser.cs" />
+    <Compile Include="Processors\Processor.cs" />
     <Compile Include="DbFactory\DBConnection.cs" />
     <Compile Include="DbFactory\DbOperation.cs" />
-    <Compile Include="Generators\AssetRunner.cs" />
-    <Compile Include="Generators\DBRunner.cs" />
-    <Compile Include="Generators\FunctionRunner.cs" />
-    <Compile Include="Generators\FunctionsRunner.cs" />
-    <Compile Include="Generators\MaterializedViewRunner.cs" />
-    <Compile Include="Generators\MaterializedViewsRunner.cs" />
-    <Compile Include="Generators\Runner.cs" />
-    <Compile Include="Generators\SchemaRunner.cs" />
-    <Compile Include="Generators\SchemasRunner.cs" />
-    <Compile Include="Generators\SequencesRunner.cs" />
-    <Compile Include="Generators\TableRunner.cs" />
-    <Compile Include="Generators\TablesRunner.cs" />
-    <Compile Include="Generators\TriggersRunner.cs" />
-    <Compile Include="Generators\TypeRunner.cs" />
-    <Compile Include="Generators\TypesRunner.cs" />
-    <Compile Include="Generators\ViewRunner.cs" />
-    <Compile Include="Generators\ViewsRunner.cs" />
-    <Compile Include="Helpers\ConfigurationHelper.cs" />
+    <Compile Include="Generators\AssetWriter.cs" />
+    <Compile Include="Generators\DatabaseWriter.cs" />
+    <Compile Include="Generators\SchemaWriter.cs" />
+    <Compile Include="Generators\TableWriter.cs" />
     <Compile Include="Helpers\DependencyHandler.cs" />
-    <Compile Include="Helpers\ExtensionMethods.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
-    <Compile Include="Helpers\DisqusHelper.cs" />
     <Compile Include="Helpers\HtmlHelper.cs" />
-    <Compile Include="Models\PgCheckConstraint.cs" />
-    <Compile Include="Models\PgColumn.cs" />
-    <Compile Include="Models\PGDatabase.cs" />
+    <Compile Include="Models\PgTable.PgCheckConstraint.cs" />
+    <Compile Include="Models\PgTable.PgColumn.cs" />
+    <Compile Include="Models\PgDatabase.cs" />
     <Compile Include="Models\PgFunction.cs" />
-    <Compile Include="Models\PgIndex.cs" />
-    <Compile Include="Models\PgMaterializedView.cs" />
+    <Compile Include="Models\PgTable.PgIndex.cs" />
     <Compile Include="Models\PgSchema.cs" />
-    <Compile Include="Models\PGSchemas.cs" />
     <Compile Include="Models\PgSequence.cs" />
     <Compile Include="Models\PgTable.cs" />
-    <Compile Include="Models\PgTableTrigger.cs" />
+    <Compile Include="Models\PgTable.PgTrigger.cs" />
     <Compile Include="Models\PgType.cs" />
     <Compile Include="Models\PgView.cs" />
     <Compile Include="Parsers\ArgumentParser.cs" />
-    <Compile Include="Parsers\CheckConstraintParser.cs" />
-    <Compile Include="Parsers\ColumnParser.cs" />
-    <Compile Include="Parsers\DefaultParser.cs" />
-    <Compile Include="Parsers\ForeignKeyParser.cs" />
-    <Compile Include="Parsers\FunctionParser.cs" />
-    <Compile Include="Parsers\IndexParser.cs" />
-    <Compile Include="Parsers\MaterializedViewParser.cs" />
-    <Compile Include="Parsers\SchemaParser.cs" />
-    <Compile Include="Parsers\SequenceParser.cs" />
-    <Compile Include="Parsers\TableParser.cs" />
-    <Compile Include="Parsers\TriggerParser.cs" />
-    <Compile Include="Parsers\TypeParser.cs" />
-    <Compile Include="Parsers\ViewParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Configs\Template\index.html" />
-    <EmbeddedResource Include="Configs\Template\function.html" />
-    <EmbeddedResource Include="Configs\Template\functions.html" />
-    <EmbeddedResource Include="Configs\Template\materialized-view.html" />
-    <EmbeddedResource Include="Configs\Template\materialized-views.html" />
-    <EmbeddedResource Include="Configs\Template\schema.html" />
-    <EmbeddedResource Include="Configs\Template\schemas.html" />
-    <EmbeddedResource Include="Configs\Template\sequences.html" />
-    <EmbeddedResource Include="Configs\Template\table.html" />
-    <EmbeddedResource Include="Configs\Template\tables.html" />
-    <EmbeddedResource Include="Configs\Template\triggers.html" />
-    <EmbeddedResource Include="Configs\Template\type.html" />
-    <EmbeddedResource Include="Configs\Template\types.html" />
-    <EmbeddedResource Include="Configs\Template\view.html" />
-    <EmbeddedResource Include="Configs\Template\views.html" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Dependencies\HTMLAgilityPack\HtmlAgilityPack.dll" />
@@ -166,50 +148,68 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <EmbeddedResource Include="Configs\Template\Stylesheets\themes\default\assets\fonts\icons.eot" />
-    <EmbeddedResource Include="Configs\Template\Stylesheets\themes\default\assets\fonts\icons.otf" />
-    <EmbeddedResource Include="Configs\Template\Stylesheets\themes\default\assets\fonts\icons.ttf" />
-    <EmbeddedResource Include="Configs\Template\Stylesheets\themes\default\assets\fonts\icons.woff" />
+    <EmbeddedResource Include="Configs\Template\kwrl\Stylesheets\themes\default\assets\fonts\icons.eot" />
+    <EmbeddedResource Include="Configs\Template\kwrl\Stylesheets\themes\default\assets\fonts\icons.otf" />
+    <EmbeddedResource Include="Configs\Template\kwrl\Stylesheets\themes\default\assets\fonts\icons.ttf" />
+    <EmbeddedResource Include="Configs\Template\kwrl\Stylesheets\themes\default\assets\fonts\icons.woff" />
+    <None Include="MixERP.Net.Utilities.PgDoc_TemporaryKey.pfx" />
+    <None Include="packages.config" />
     <None Include="PgDoc.licenseheader" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Configs\Template\Scripts\prism.min.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Configs\Template\Scripts\jquery.min.js" />
-    <EmbeddedResource Include="Configs\Template\Stylesheets\semantic.min.css" />
-    <EmbeddedResource Include="Configs\Template\Scripts\semantic.min.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Configs\Template\Stylesheets\prism.min.css" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Configs\Template\Stylesheets\mixerp.css" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Configs\Template\Stylesheets\themes\default\assets\fonts\icons.svg" />
-    <EmbeddedResource Include="Configs\Template\Stylesheets\themes\default\assets\images\flags.png" />
+    <None Include="Properties\app.manifest" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LICENSE" />
-    <EmbeddedResource Include="Configs\SQL\empty.sql" />
-    <EmbeddedResource Include="Configs\SQL\columns.sql" />
-    <EmbeddedResource Include="Configs\SQL\check-constraints.sql" />
-    <EmbeddedResource Include="Configs\SQL\indices.sql" />
-    <EmbeddedResource Include="Configs\SQL\table-triggers.sql" />
-    <EmbeddedResource Include="Configs\SQL\db.sql" />
-    <EmbeddedResource Include="Configs\SQL\functions-by-schema.sql" />
-    <EmbeddedResource Include="Configs\SQL\materialized-views-by-schema.sql" />
-    <EmbeddedResource Include="Configs\SQL\schemas.sql" />
-    <EmbeddedResource Include="Configs\SQL\schema.sql" />
-    <EmbeddedResource Include="Configs\SQL\sequences-by-schema.sql" />
-    <EmbeddedResource Include="Configs\SQL\tables-by-schema.sql" />
-    <EmbeddedResource Include="Configs\SQL\trigger-functions-by-schema.sql" />
+    <EmbeddedResource Include="Configs\SQL\byTable\column.sql" />
+    <EmbeddedResource Include="Configs\SQL\byTable\checkconstraint.sql" />
+    <EmbeddedResource Include="Configs\SQL\byTable\index.sql" />
+    <EmbeddedResource Include="Configs\SQL\byTable\trigger.sql" />
+    <EmbeddedResource Include="Configs\SQL\bySchema\functions.sql" />
+    <EmbeddedResource Include="Configs\SQL\bySchema\schemas.sql" />
+    <EmbeddedResource Include="Configs\SQL\bySchema\sequences.sql" />
+    <EmbeddedResource Include="Configs\SQL\bySchema\tables.sql" />
+    <EmbeddedResource Include="Configs\SQL\bySchema\triggerfunctions.sql" />
     <EmbeddedResource Include="Configs\SQL\pg_catalog.pg_get_typedef.sql" />
-    <EmbeddedResource Include="Configs\SQL\types-by-schema.sql" />
-    <EmbeddedResource Include="Configs\SQL\views-by-schema.sql" />
+    <EmbeddedResource Include="Configs\SQL\bySchema\types.sql" />
+    <EmbeddedResource Include="Configs\SQL\bySchema\views.sql" />
+    <EmbeddedResource Include="Configs\Template\kwrl\database.html" />
+    <EmbeddedResource Include="Configs\Template\kwrl\function.html" />
+    <EmbeddedResource Include="Configs\Template\kwrl\functions.html" />
+    <EmbeddedResource Include="Configs\Template\kwrl\master.html" />
+    <EmbeddedResource Include="Configs\Template\kwrl\schema.html" />
+    <EmbeddedResource Include="Configs\Template\kwrl\schemas.html" />
+    <EmbeddedResource Include="Configs\Template\kwrl\Scripts\jquery.min.js" />
+    <EmbeddedResource Include="Configs\Template\kwrl\Scripts\semantic.min.js" />
+    <EmbeddedResource Include="Configs\Template\kwrl\sequences.html" />
+    <EmbeddedResource Include="Configs\Template\kwrl\Stylesheets\mixerp.css" />
+    <EmbeddedResource Include="Configs\Template\kwrl\Stylesheets\prism.min.css" />
+    <EmbeddedResource Include="Configs\Template\kwrl\Stylesheets\semantic.min.css" />
+    <EmbeddedResource Include="Configs\Template\kwrl\Stylesheets\themes\default\assets\fonts\icons.svg" />
+    <EmbeddedResource Include="Configs\Template\kwrl\Stylesheets\themes\default\assets\images\flags.png" />
+    <EmbeddedResource Include="Configs\Template\kwrl\table.html" />
+    <EmbeddedResource Include="Configs\Template\kwrl\tables.html" />
+    <EmbeddedResource Include="Configs\Template\kwrl\type.html" />
+    <EmbeddedResource Include="Configs\Template\kwrl\types.html" />
+    <EmbeddedResource Include="Configs\Template\kwrl\view.html" />
+    <EmbeddedResource Include="Configs\Template\kwrl\views.html" />
     <Content Include="Dependencies\postgresql.ico" />
     <Content Include="postgresql.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

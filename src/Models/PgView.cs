@@ -18,14 +18,42 @@ along with MixERP.  If not, see <http://www.gnu.org/licenses/>.
 ***********************************************************************************/
 namespace MixERP.Net.Utilities.PgDoc.Models
 {
-    public sealed class PgView
+    public sealed class PgView : PgBase
     {
-        public string Description { get; set; }
-        public string Name { get; set; }
+		public string Description { get; set; }
+		public bool IsMaterialized { get; set; }
         public string Owner { get; set; }
         public long RowNumber { get; set; }
-        public string SchemaName { get; set; }
         public string Definition { get; set; }
         public string Tablespace { get; set; }
+
+		public PgView(){}
+		override public PgBase Convert(System.Data.DataRow row)
+		{
+			RowNumber = Conversion.TryCastLong(row["row_number"]);
+			Name = Conversion.TryCastString(row["object_name"]);
+			SchemaName = Conversion.TryCastString(row["object_schema"]);
+			Tablespace = Conversion.TryCastString(row["tablespace"]);
+			Owner = Conversion.TryCastString(row["owner"]);
+			Definition = Conversion.TryCastString(row["definition"]);
+			Description = Conversion.TryCastString(row["description"]);
+			IsMaterialized = Conversion.TryCastBoolean(row["is_materialized"]);
+
+
+			return this as PgBase;
+		}
+		override public string Parse(string template)
+		{
+			return template
+				.Replace("{{view.name}}", Name)
+                .Replace("{{view.schema}}", SchemaName)
+                .Replace("{{view.rowNumber}}", RowNumber.ToString())
+                .Replace("{{view.owner}}", Owner)
+                .Replace("{{view.tablespace}}", Tablespace)
+				.Replace("{{view.isMaterialized}}", IsMaterialized ? "YES" : "NO")
+                .Replace("{{view.definition}}", Definition)
+				.Replace("{{view.description}}", md.Transform(Description)
+				);
+		}
     }
 }

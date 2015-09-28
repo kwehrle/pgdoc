@@ -24,15 +24,13 @@ namespace MixERP.Net.Utilities.PgDoc.Parsers
     {
         internal static string Parse(string argument, string argumentName)
         {
-            if (argument == null)
-            {
-                return string.Empty;
-            }
-
-			if (argument.StartsWith(argumentName, StringComparison.OrdinalIgnoreCase) && argument[argumentName.Length] == '=')
-            {
-				return argument.Substring(argumentName.Length + 1);
-            }
+			if (argument != null) {
+				if (!argumentName.EndsWith("="))
+					argumentName += "=";
+				if (argument.StartsWith(argumentName, StringComparison.OrdinalIgnoreCase) ) {
+					return argument.Substring(argumentName.Length);
+				}
+			}
 
             return string.Empty;
         }

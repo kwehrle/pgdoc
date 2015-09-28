@@ -18,11 +18,9 @@ along with MixERP.  If not, see <http://www.gnu.org/licenses/>.
 ***********************************************************************************/
 namespace MixERP.Net.Utilities.PgDoc.Models
 {
-    public sealed class PgType
+    public sealed class PgType : PgBase
     {
-        public long RowNumber { get; set; }
-        public string SchemaName { get; set; }
-        public string Name { get; set; }
+		public long RowNumber { get; set; }
         public string BaseType { get; set; }
         public string Owner { get; set; }
         public string Collation { get; set; }
@@ -32,5 +30,39 @@ namespace MixERP.Net.Utilities.PgDoc.Models
         public bool NotNull { get; set; }
         public string Description { get; set; }
         public string Definition { get; set; }
+
+		public PgType() { }
+		override public PgBase Convert(System.Data.DataRow row)
+		{ 
+            RowNumber = Conversion.TryCastLong(row["row_number"]);
+            SchemaName = Conversion.TryCastString(row["schema_name"]);
+            Name = Conversion.TryCastString(row["type_name"]);
+            BaseType = Conversion.TryCastString(row["base_type"]);
+            Owner = Conversion.TryCastString(row["owner"]);
+            Collation = Conversion.TryCastString(row["collation"]);
+            Default = Conversion.TryCastString(row["default"]);
+            Type = Conversion.TryCastString(row["type"]);
+            StoreType = Conversion.TryCastString(row["store_type"]);
+            NotNull = Conversion.TryCastBoolean(row["not_null"]);
+            Definition = Conversion.TryCastString(row["definition"]);
+			Description = Conversion.TryCastString(row["description"]);
+			return this as PgBase;
+ 		}
+		override public string Parse(string template)
+		{
+			return template
+				.Replace("{{type.name}}", Name)
+                .Replace("{{type.rowNumber}}", RowNumber.ToString())
+                .Replace("{{type.schema}}", SchemaName)
+                .Replace("{{type.baseType}}", BaseType)
+                .Replace("{{type.owner}}", Owner)
+                .Replace("{{type.collation}}", Collation)
+                .Replace("{{type.default}}", Default)
+                .Replace("{{type.type}}", Type)
+                .Replace("{{type.storeType}}", StoreType)
+                .Replace("{{type.definition}}", Definition)
+                .Replace("{{type.notNull}}", NotNull.ToString())
+				.Replace("{{type.description}}", md.Transform(Description));
+		}
     }
 }

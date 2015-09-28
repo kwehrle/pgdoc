@@ -1,4 +1,6 @@
-﻿/********************************************************************************
+﻿using System;
+using System.Collections.Generic;
+/********************************************************************************
 Copyright (C) Binod Nepal, Mix Open Foundation (http://mixof.org).
 
 This file is part of MixERP.
@@ -20,17 +22,41 @@ using System.Collections.ObjectModel;
 
 namespace MixERP.Net.Utilities.PgDoc.Models
 {
-    public sealed class PgTable
+    public sealed partial class PgTable : PgBase
     {
-        public string Description { get; set; }
-        public string Name { get; set; }
+		public string Description { get; set; }
         public string Owner { get; set; }
         public long RowNumber { get; set; }
-        public string SchemaName { get; set; }
         public string Tablespace { get; set; }
-        public Collection<PgColumn> Columns { get; set; }
-        public Collection<PgTableTrigger> Triggers { get; set; }
-        public Collection<PgIndex> Indices { get; set; }
-        public Collection<PgCheckConstraint> CheckConstraints { get; set; }
+		public IEnumerable<PgColumn> Columns { get; set; }
+		public IEnumerable<PgTrigger> Triggers { get; set; }
+		public IEnumerable<PgIndex> Indices { get; set; }
+        public IEnumerable<PgCheckConstraint> CheckConstraints { get; set; }
+
+		public IEnumerable<PgForeignKey> ForeignKeys { get; set; }
+		public IEnumerable<PgForeignKey> Defaults { get; set; }
+
+		public PgTable() { }
+		override public PgBase Convert(System.Data.DataRow row)
+		{ 
+			RowNumber = Conversion.TryCastLong(row["row_number"]);
+            Name = Conversion.TryCastString(row["object_name"]);
+            SchemaName = Conversion.TryCastString(row["object_schema"]);
+            Tablespace = Conversion.TryCastString(row["tablespace"]);
+            Owner = Conversion.TryCastString(row["owner"]);
+			Description = Conversion.TryCastString(row["description"]);
+			return this as PgBase;
+		}
+
+		override public string Parse(string template)
+		{
+			return template
+				.Replace("{{table.name}}", Name)
+                .Replace("{{table.rowNumber}}", RowNumber.ToString())
+				.Replace("{{table.schema}}", SchemaName)
+				.Replace("{{table.owner}}", Owner)
+				.Replace("{{table.space}}", Tablespace)
+				.Replace("{{table.description}}", md.Transform(Description));				
+		}
     }
 }

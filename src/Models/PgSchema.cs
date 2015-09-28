@@ -1,4 +1,5 @@
-﻿/********************************************************************************
+﻿using System.Collections.Generic;
+/********************************************************************************
 Copyright (C) Binod Nepal, Mix Open Foundation (http://mixof.org).
 
 This file is part of MixERP.
@@ -20,17 +21,29 @@ using System.Collections.ObjectModel;
 
 namespace MixERP.Net.Utilities.PgDoc.Models
 {
-    public sealed class PGSchema
+    public sealed class PgSchema : PgBase
     {
-        public string Description { get; set; }
-        public Collection<PgFunction> Functions { get; set; }
-        public Collection<PgMaterializedView> MaterializedViews { get; set; }
-        public string Name { get; set; }
+		public string Description { get; set; }
         public string Owner { get; set; }
-        public Collection<PgTable> Tables { get; set; }
-        public Collection<PgFunction> TriggerFunctions { get; set; }
-        public Collection<PgView> Views { get; set; }
-        public Collection<PgSequence> Sequences { get; set; }
-        public Collection<PgType> Types { get; set; }
+
+		public PgSchema() { }
+
+		override public PgBase Convert(System.Data.DataRow row)
+		{
+			SchemaName = "."; // Pseudo-Schemaname
+			Name = Conversion.TryCastString(row["namespace"]);
+			Owner = Conversion.TryCastString(row["owner"]);
+			Description = Conversion.TryCastString(row["description"]);
+
+			return this as PgBase;
+		}
+
+		override public string Parse(string template) {
+			return template
+				.Replace("{{schema.name}}", Name)
+				.Replace("{{schema.owner}}", Owner)
+				.Replace("{{schema.description}}", md.Transform(Description));
+		}
+
     }
 }
