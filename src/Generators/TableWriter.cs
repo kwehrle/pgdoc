@@ -16,32 +16,27 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with MixERP.  If not, see <http://www.gnu.org/licenses/>.
 ***********************************************************************************/
+using System.Collections.Generic;
 using MixERP.Net.Utilities.PgDoc.Helpers;
 using MixERP.Net.Utilities.PgDoc.Models;
+using MixERP.Net.Utilities.PgDoc.Processors;
+using MixERP.Net.Utilities.PgDoc.Parsers;
 
 namespace MixERP.Net.Utilities.PgDoc.Generators
 {
-    internal static class FunctionRunner
+    internal class TableWriter: BaseWriter<PgTable>
     {
-        private static readonly string OutputPath = ConfigurationHelper.GetFunctionOutputDirectory();
-        private static readonly string TemplatePath = ConfigurationHelper.GetFunctionTemplatePath();
+		override protected string BuildDocumentation(string content, PgTable table, IEnumerable<string> matches)
+		{
+			content = Parser<PgTable.PgForeignKey>.Parse(content, matches, table.ForeignKeys);
+			//content = DefaultParser.Parse(content, matches, table.Columns);
 
-        internal static void Run(PgFunction function)
-        {
-            string content = FileHelper.ReadResource(TemplatePath);
+			content = Parser<PgTable.PgCheckConstraint>.Parse(content, matches, table.CheckConstraints);
+			content = Parser<PgTable.PgIndex>.Parse(content, matches, table.Indices);
+			content = Parser<PgTable.PgColumn>.Parse(content, matches, table.Columns);
+			content = Parser<PgTable.PgTrigger>.Parse(content, matches, table.Triggers);
 
-            BuildDocumentation(content, function);
-        }
-
-        private static void BuildDocumentation(string content, PgFunction function)
-        {
-            content = content.Replace("[DBName]", Program.Database.ToUpperInvariant());
-
-            content = Parsers.FunctionParser.Parse(content, function);
-
-            string targetPath = System.IO.Path.Combine (OutputPath, function.SchemaName, function.Name + "-" + function.FunctionOid + ".html");
-
-            FileHelper.WriteFile(content, targetPath);
-        }
-    }
+			return StaticWriter.FillMaster("Table " + table.Name, content.Replace(content, table.Parse(content)), 2);
+		}
+	}
 }

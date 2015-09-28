@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="generator" content="MixERP PostgreSQL Documenter/kwrl-Fork" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{db.name}} Database Documentation - {{doc.title}}</title>
+    <link rel="stylesheet" type="text/css" href="{{dir_level}}Stylesheets/semantic.min.css" />
+    <link rel="stylesheet" type="text/css" href="{{dir_level}}Stylesheets/prism.min.css" />
+    <link rel="stylesheet" type="text/css" href="{{dir_level}}Stylesheets/mixerp.css" />
+</head>
+<body>
+    <div class="ui fixed top inverted teal menu">
+        <ul>
+            <li class="logo"><a class="item" href="{{dir_level}}{{db.name}}.html"><i class="database icon"></i>{{db.name}}</a></li>
+            <li {{menu.schemas}}><a class="item" href="{{dir_level}}schemas.html"><i class="star icon"></i>Schemas</a></li>
+            <li {{menu.tables}}><a class="item" href="{{dir_level}}tables.html"><i class="table icon"></i>Tables</a></li>
+            <li {{menu.sequences}}><a class="item" href="{{dir_level}}sequences.html"><i class="fast forward icon"></i>Sequences</a></li>
+            <li {{menu.views}}><a class="item" href="{{dir_level}}views.html"><i class="asterisk icon"></i>Views</a></li>
+            <li {{menu.functions}}><a class="item" href="{{dir_level}}functions.html"> <i class="code icon"></i>Functions</a></li>
+            <li {{menu.types}}><a class="item" href="{{dir_level}}types.html"> <i class="cube icon"></i>Types</a></li>
+        </ul>
+    </div>
+    <div class="ui one column padded page grid">
+        <div class="column">
+            <!--h1>{{doc.title}}</h1-->
+            {{content}}
+            <script type="text/javascript" src="{{dir_level}}Scripts/jquery.min.js"></script>
+            <script type="text/javascript" src="{{dir_level}}Scripts/semantic.min.js"></script>
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.min.js"></script>
+            
+        </div>
+    </div>
+</body>
+</html>

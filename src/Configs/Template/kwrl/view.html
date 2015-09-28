@@ -1,0 +1,13 @@
+﻿<table class="ui definition compact striped table">
+    <tr><td>Schema</td><td><a href="../../schemas/{{view.schema}}.html">{{view.schema}}</a></td></tr>
+    <tr><td>Name</td><td>{{view.name}}</td></tr>
+    <tr><td>Owner</td><td>{{view.owner}}</td></tr>
+    <tr><td>materialized</td><td>{{view.isMaterialized}}</td></tr>
+    <tr><td>Tablespace</td><td>{{view.tablespace}}</td></tr>
+    <tr><td>Description</td><td class='md'>{{view.description}}</td></tr>
+</table>
+<pre>
+<code class="language-sql">
+{{view.definition}}
+</code>
+</pre>

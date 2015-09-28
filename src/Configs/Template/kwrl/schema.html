@@ -1,0 +1,96 @@
+﻿<h1>Schema {{SchemaName}}</h1>
+<div class='md'>
+     {{schema.description}}
+</div>
+
+<div id="table_container">
+    <h3>Tables</h3>
+    <table class="ui striped table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>Tablespace</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!--table repeater:<tr><td><a href="../tables/{{table.schema}}/{{table.name}}.html">{{table.name}}</a></td><td>{{table.owner}}</td><td>{{table.space}}</td><td class='md'>{{table.description}}</td></tr>-->
+        </tbody>
+    </table>
+</div>
+
+      <div id="sequence_container">
+        <h3>Sequences</h3>
+        <table class="ui striped table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Owner</th>
+                    <th>Data Type</th>
+                    <th>Start Value</th>
+                    <th>Increment</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <!--sequence repeater:<tr><td>{{sequ.name}}</td><td>{{sequ.owner}}</td><td>{{sequ.dataType}}</td><td>{{sequ.startValue}}</td><td>{{sequ.increment}}</td><td class='md'>{{sequ.description}}</td></tr>-->
+            </tbody>
+        </table>
+    </div>
+
+<div id="view_container">
+    <h3>Views</h3>
+    <table class="ui striped table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>Tablespace</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <!--view repeater:<tr><td><a href="../views/{{view.schema}}/{{view.name}}.html">{{view.name}}</a></td><td>{{view.owner}}</td><td>{{view.tablespace}}</td><td class='md'>{{view.description}}</td></tr>-->
+        </tbody>
+    </table>
+</div>
+<div id="function_container">
+      <h3>Functions</h3>
+
+      <table class="ui striped table">
+        <thead>
+          <tr>
+            <th>Function</th><th>Owner</th><th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!--function repeater:<tr><td><a href="../functions/{{fct.schema}}/{{fct.name}}.html"> {{fct.name}}({{fct.arguments}}) <br /> RETURNS {{fct.resultType}} </a></td><td>{{fct.owner}}</td><td class='md'>{{fct.description}}</td></tr>-->
+        </tbody>
+      </table>
+</div>
+<div id="type_container">
+    <h3>Types</h3>
+
+    <table class="ui striped table">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Base Type</th>
+                <th>Owner</th>
+                <th>Collation</th>
+                <th>Default</th>
+                <th>Type</th>
+                <th>StoreType</th>
+                <th>NotNull</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <!--type repeater:<tr><td><a href="../types/{{type.schema}}/{{type.name}}.html"> {{type.name}} </a></td><td>{{type.baseType}}</td><td>{{type.owner}}</td><td>{{type.collation}}</td><td>{{type.default}}</td><td>{{type.type}}</td><td>{{type.storeType}}</td><td>{{type.notNull}}</td><td class='md'>{{type.description}}</td></tr>-->
+        </tbody>
+    </table>
+</div>
