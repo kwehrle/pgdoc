@@ -22,7 +22,12 @@ namespace MixERP.Net.Utilities.PgDoc.Models
 {
 	public abstract class PgBase
 	{
-		public static Markdown md = new Markdown();
+		public static Markdown MD = new Markdown();
+        public static string TransformMarkDown(string md) {
+            md = md.Replace(" -- ", " &ndash; ");
+			md = md.Replace("__", @"\_");
+			return MD.Transform(md);
+        }
 
 		public string Name { get; set; }
 		public string SchemaName { get; set; }

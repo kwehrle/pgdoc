@@ -70,7 +70,7 @@ namespace MixERP.Net.Utilities.PgDoc.Helpers
 
         internal static string ReadSqlResource(string name)
         {
-			return ReadResource(string.Format("MixERP.Net.Utilities.PgDoc.Configs.SQL.{0}", name));
+			return ReadResource(string.Format("PgDoc.Configs.SQL.{0}", name));
         }
 
         internal static string ReadResource(string resourceName)
@@ -95,23 +95,6 @@ namespace MixERP.Net.Utilities.PgDoc.Helpers
             {
                 file.Directory.Create();
             }
-
-
-			//List<string> matches = HtmlHelper.GetMatch(content);
-			//foreach (string match in matches)
-			//{
-			//	string comment = HtmlHelper.RemoveComment(match);
-
-			//	if (!comment.StartsWith("DisqusLoader"))
-			//	{
-			//		continue;
-			//	}
-
-			//	comment = comment.ReplaceFirst("DisqusLoader", "");
-			//	comment = comment.Replace("[DisqusShortName]", Program.DisqusName);
-
-			//	content = content.Replace(match, comment);
-			//}
 
             File.WriteAllText(file.FullName, content);
         }

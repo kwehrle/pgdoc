@@ -54,9 +54,9 @@ namespace MixERP.Net.Utilities.PgDoc.Models
 				.Replace("{{table.name}}", Name)
                 .Replace("{{table.rowNumber}}", RowNumber.ToString())
 				.Replace("{{table.schema}}", SchemaName)
-				.Replace("{{table.owner}}", Owner)
-				.Replace("{{table.space}}", Tablespace)
-				.Replace("{{table.description}}", md.Transform(Description));				
+				.Replace("{{table.owner}}", Program.omitOwner.Equals(Owner) ? Program.OwnerSubstitute : Owner)
+				.Replace("{{table.space}}", Program.omitTablespace.Equals(Tablespace) ? Program.TablespaceSubstitute : Tablespace)
+				.Replace("{{table.description}}", PgBase.TransformMarkDown(Description));				
 		}
     }
 }

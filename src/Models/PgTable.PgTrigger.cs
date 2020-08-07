@@ -98,7 +98,7 @@ namespace MixERP.Net.Utilities.PgDoc.Models
 					.Replace("{{trigger.functionSchema}}", TargetFunctionSchema)
 					.Replace("{{trigger.functionName}}", TargetFunctionName)
 					.Replace("{{trigger.functionOid}}", TargetFunctionOid)
-					.Replace("{{trigger.description}}", md.Transform(Description));
+					.Replace("{{trigger.description}}", PgBase.TransformMarkDown(Description));
 			}
 		}
 	}

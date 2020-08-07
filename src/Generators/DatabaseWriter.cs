@@ -57,7 +57,7 @@ namespace MixERP.Net.Utilities.PgDoc.Generators
 		//}
 		override protected string BuildDocumentation(string content, PgDatabase db, IEnumerable<string> matches = null)
 		{
-			content = content.Replace("{{db.comment}}", md.Transform(db.Comment));
+			content = content.Replace("{{db.comment}}", PgBase.TransformMarkDown(db.Comment));
 
 			foreach (string match in matches)
 			{

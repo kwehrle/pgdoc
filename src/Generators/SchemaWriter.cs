@@ -31,11 +31,11 @@ namespace MixERP.Net.Utilities.PgDoc.Generators
     {
 		override protected string BuildDocumentation(string content, PgSchema schema, IEnumerable<string> matches)
 		{
-			var Tables = Program.db.Tables.Where(t => t.SchemaName == schema.Name); //new Processor<PgTable>().GetBySchema(schema.Name);
-			var Views = Program.db.Views.Where(t => t.SchemaName == schema.Name); //new Processor<PgView>().GetBySchema(schema.Name);
-			var Sequences = Program.db.Sequences.Where(t => t.SchemaName == schema.Name); //new Processor<PgSequence>().GetBySchema(schema.Name);
-			var Functions = Program.db.Functions.Where(t => t.SchemaName == schema.Name); //new Processor<PgFunction>().GetBySchema(schema.Name);
-			var Types = Program.db.Types.Where(t => t.SchemaName == schema.Name); //new Processor<PgType>().GetBySchema(schema.Name);
+			var Tables = Program.db.Tables.Where(t => t.SchemaName == schema.Name); 
+			var Views = Program.db.Views.Where(t => t.SchemaName == schema.Name); 
+			var Sequences = Program.db.Sequences.Where(t => t.SchemaName == schema.Name); 
+			var Functions = Program.db.Functions.Where(t => t.SchemaName == schema.Name); 
+			var Types = Program.db.Types.Where(t => t.SchemaName == schema.Name); 
 			content = content.Replace("{{DBName}}", Program.Database.ToUpperInvariant());
 			content = content.Replace("{{SchemaName}}", schema.Name);
 
@@ -64,7 +64,7 @@ namespace MixERP.Net.Utilities.PgDoc.Generators
 				new BaseWriter<PgType>().WriteFile(type);
 			}
 
-			content = content.Replace("{{schema.description}}", md.Transform(schema.Description));
+			content = content.Replace("{{schema.description}}", PgBase.TransformMarkDown(schema.Description));
 
 			return StaticWriter.FillMaster(schema.Name, content, 1);
 		}

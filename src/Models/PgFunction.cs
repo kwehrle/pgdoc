@@ -54,12 +54,12 @@ namespace MixERP.Net.Utilities.PgDoc.Models
                 .Replace("{{fct.schema}}", SchemaName)
                 .Replace("{{fct.arguments}}", Arguments.Replace(", ", "<br />"))
                 .Replace("{{fct.rowNumber}}", RowNumber.ToString())
-                .Replace("{{fct.owner}}", Owner)
+                .Replace("{{fct.owner}}", Program.omitOwner.Equals(Owner) ? Program.OwnerSubstitute : Owner)
                 .Replace("{{fct.resultType}}", ResultType)
                 .Replace("{{fct.functionType}}", FunctionType)
                 .Replace("{{fct.oid}}", oid.ToString())
                 .Replace("{{fct.definition}}", FunctionDefinition)
-                .Replace("{{fct.description}}", md.Transform(Description));
+                .Replace("{{fct.description}}", PgBase.TransformMarkDown(Description));
 		}
     }
 

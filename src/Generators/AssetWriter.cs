@@ -23,7 +23,7 @@ namespace MixERP.Net.Utilities.PgDoc.Generators
 {
     internal class AssetWriter
     {
-		static string BasePath = string.Format("MixERP.Net.Utilities.PgDoc.Configs.Template.{0}.", Program.TemplateSet);
+		static string BasePath = string.Format("PgDoc.Configs.Template.{0}.", Program.TemplateSet); // MixERP.Net.Utilities.
 		private void Write(string src, string dest) {
 			FileHelper.WriteResourceToOutPutDirectory(string.Format("{0}{1}", BasePath, src), dest);
 		}
@@ -36,7 +36,7 @@ namespace MixERP.Net.Utilities.PgDoc.Generators
             Write("Scripts.prism.min.js", "Scripts/prism.min.js");
             Write("Scripts.semantic.min.js", "Scripts/semantic.min.js");
             
-			Write("Stylesheets.mixerp.css", "Stylesheets/mixerp.css");
+			Write("Stylesheets.pgdoc.css", "Stylesheets/pgdoc.css");
             Write("Stylesheets.prism.min.css", "Stylesheets/prism.min.css");
             Write("Stylesheets.semantic.min.css", "Stylesheets/semantic.min.css");
 

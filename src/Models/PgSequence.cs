@@ -52,13 +52,13 @@ namespace MixERP.Net.Utilities.PgDoc.Models
 				.Replace("{{sequ.name}}", Name)
 				.Replace("{{sequ.rowNumber}}", RowNumber.ToString())
 				.Replace("{{sequ.schema}}", SchemaName)
-				.Replace("{{sequ.owner}}", Owner)
+				.Replace("{{sequ.owner}}", Program.omitOwner.Equals(Owner) ? Program.OwnerSubstitute : Owner)
 				.Replace("{{sequ.dataType}}", DataType)
 				.Replace("{{sequ.startValue}}", StartValue)
 				.Replace("{{sequ.increment}}", Increment)
 				.Replace("{{sequ.minimumValue}}", MinimumValue)
 				.Replace("{{sequ.maximumValue}}", MaximumValue)
-				.Replace("{{sequ.description}}", md.Transform(Description));				
+				.Replace("{{sequ.description}}", PgBase.TransformMarkDown(Description));				
 		}
 	}
 }

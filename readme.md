@@ -1,5 +1,4 @@
-#PgDoc PostgreSQL Documenter
----
+# PgDoc PostgreSQL Documenter
 PgDoc creates beautiful database documentations from your PostgreSQL database. It is a small console application that runs
 on:
 
@@ -9,13 +8,13 @@ on:
 
 ![PgDoc Screenshot](https://raw.githubusercontent.com/mixerp/pgdoc/master/assets/images/pg-doc.png)
 
-##Sample Documentation (Created by PgDoc)
+## Sample Documentation (Created by PgDoc)
 [http://mixerp.org/erp/db-docs/](http://mixerp.org/erp/db-docs/)
 
 ---
-#Compiled Binaries
+# Compiled Binaries
 
-##Windows Users
+## Windows Users
 Windows users can download PgDoc from this url:
 
 [http://mixerp.org/erp/mixerp-pgdoc.zip](http://mixerp.org/erp/mixerp-pgdoc.zip)
@@ -23,7 +22,7 @@ Windows users can download PgDoc from this url:
 Note that the above link is achieved dependencies-packed, self-contained executable file. But before you try PgDoc, please make
 sure that you have .net Framework 4.5 installed.
 
-##OSX & Linux Users
+## OSX & Linux Users
 
 Before you download PgDoc, you must have Mono framework installed. Depending upon your operating system, please download
 and install Mono:
@@ -36,8 +35,8 @@ Link to PgDoc for Mono:
 
 ---
 
-#Documentation
-##Basic Syntax
+# Documentation
+## Basic Syntax
 
 **Windows**
 ```
@@ -61,7 +60,7 @@ Example
 mono /users/nirvan/desktop/pg-doc/MixERP.Net.Utilities.PgDoc.exe -s=localhost -d=mixerp -u=postgres -p=secret -o=/users/nirvan/desktop/db-doc
 ```
 
-##Additional parameters
+## Additional parameters
 **-is: include schema**
 
 Use a postgres regular expression to decide, which schemas should be documented. 
@@ -89,6 +88,6 @@ If e.g. no types are definied in the database, the complete area is hidden i.e. 
 
 Under Configs/Template you can define different template sets as directories and so can  easily switch between them. So you're able to define one for Twitter bootstrap and one for an alternative library
 
-**Important: ** This version of pgdoc no longer supports the original placeholder syntax (square brackets, `[db.comment]`). All placeholders must use double curly brackets: `{{db.comment}}`
+**Important:** This version of pgdoc no longer supports the original placeholder syntax (square brackets, `[db.comment]`). All placeholders must use double curly brackets: `{{db.comment}}`
 
 

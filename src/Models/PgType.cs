@@ -55,14 +55,14 @@ namespace MixERP.Net.Utilities.PgDoc.Models
                 .Replace("{{type.rowNumber}}", RowNumber.ToString())
                 .Replace("{{type.schema}}", SchemaName)
                 .Replace("{{type.baseType}}", BaseType)
-                .Replace("{{type.owner}}", Owner)
+				.Replace("{{type.owner}}", Program.omitOwner.Equals(Owner) ? Program.OwnerSubstitute : Owner)
                 .Replace("{{type.collation}}", Collation)
                 .Replace("{{type.default}}", Default)
                 .Replace("{{type.type}}", Type)
                 .Replace("{{type.storeType}}", StoreType)
                 .Replace("{{type.definition}}", Definition)
                 .Replace("{{type.notNull}}", NotNull.ToString())
-				.Replace("{{type.description}}", md.Transform(Description));
+				.Replace("{{type.description}}", PgBase.TransformMarkDown(Description));
 		}
     }
 }

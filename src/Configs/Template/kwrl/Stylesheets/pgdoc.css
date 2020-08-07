@@ -1,0 +1,65 @@
+@media print{
+	body {
+		background-color: #FFFFFF;
+	}
+}
+
+
+
+/* kwrl */
+.menu a.item.hide {
+	display: none;
+}
+
+
+
+.menu .item.info {
+	width: 100px;
+	text-align: center;
+	font-size: .85rem;
+	margin-top: -4px;
+}
+
+.menu .logo {
+	font-size: 1rem;
+	vertical-align: middle;
+	font-weight: bold;
+	color: white;
+	text-transform: uppercase;
+}
+
+
+th, td {
+	vertical-align: top !important;
+}
+
+.md, .md p, .md ul li, .md ol li {
+	line-height: 1.5em;
+}
+
+h1 em, .md em {
+	font-variant: small-caps;
+	text-transform: lowercase;
+	font-style: normal;
+	font-weight: bold;
+}
+
+.md em {
+	font-size: 1.15em;
+}
+
+.md code {
+	display: inline-block;
+	background-color: #eee;
+	padding: 0 2px;
+	margin: 0 1px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	font-size: 0.9em;
+}
+
+.column.footnotes span {
+	display: inline-block;
+	width: 20%;
+}
+

@@ -82,7 +82,7 @@ namespace MixERP.Net.Utilities.PgDoc.Models
 						.Replace("{{col.indicator}}", indicator)
 						.Replace("{{col.defaultValue}}", DefaultValue)
 						.Replace("{{col.keyIndicatorCssClass}}", keyIndicatorCssClass)
-						.Replace("{{col.description}}", md.Transform(Description));
+						.Replace("{{col.description}}", PgBase.TransformMarkDown(Description));
 			}
 		}
 	}

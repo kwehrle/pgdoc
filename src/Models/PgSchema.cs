@@ -41,8 +41,8 @@ namespace MixERP.Net.Utilities.PgDoc.Models
 		override public string Parse(string template) {
 			return template
 				.Replace("{{schema.name}}", Name)
-				.Replace("{{schema.owner}}", Owner)
-				.Replace("{{schema.description}}", md.Transform(Description));
+				.Replace("{{schema.owner}}", Program.omitOwner.Equals(Owner) ? Program.OwnerSubstitute : Owner)
+				.Replace("{{schema.description}}", PgBase.TransformMarkDown(Description));
 		}
 
     }

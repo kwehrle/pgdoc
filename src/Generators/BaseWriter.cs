@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MarkdownDeep;
+
 
 namespace MixERP.Net.Utilities.PgDoc.Generators
 {
@@ -15,13 +15,13 @@ namespace MixERP.Net.Utilities.PgDoc.Generators
 
 	internal static class StaticWriter
 	{
-		internal static readonly string TemplatePath = string.Format("MixERP.Net.Utilities.PgDoc.Configs.Template.{0}", Program.TemplateSet);
+		internal static readonly string TemplatePath = string.Format("PgDoc.Configs.Template.{0}", Program.TemplateSet); // MixERP.Net.Utilities.
 
 		private static string _master = null;
-		internal static string Master { get { 
+		internal static string Master { get {
 			if (_master == null) {
 				var db = Program.db;
-				const string hide = "class='hide'";
+				const string hide = "hide";
 				_master = FileHelper.ReadResource(string.Format("{0}.master.html", TemplatePath));
 				// hide unnecessary menu items
 				_master = _master.Replace("{{menu.schemas}}", db.Schemas.Count() > 0 ? string.Empty : hide);
@@ -30,6 +30,11 @@ namespace MixERP.Net.Utilities.PgDoc.Generators
 				_master = _master.Replace("{{menu.views}}", db.Views.Count() > 0 ? string.Empty : hide);
 				_master = _master.Replace("{{menu.functions}}", db.Functions.Count() > 0 ? string.Empty : hide);
 				_master = _master.Replace("{{menu.types}}", db.Types.Count() > 0 ? string.Empty : hide);
+
+				_master = _master.Replace("{{default.tablespace}}", Program.omitTablespace.Length == 0 ? string.Empty : string.Format("{0} Tablespace is '{1}'. ", Program.TablespaceSubstitute, Program.omitTablespace));
+				_master = _master.Replace("{{default.owner}}", Program.omitOwner.Length == 0 ? string.Empty : string.Format("{0} Owner is '{1}'. ", Program.OwnerSubstitute, Program.omitOwner));
+
+					_master = _master.Replace("{{generated}}", string.Format("{0:yyyy-MM-dd HH:mm} UTC", DateTime.UtcNow));
 			}
 			return _master;
 		}
@@ -48,7 +53,6 @@ namespace MixERP.Net.Utilities.PgDoc.Generators
 
 	internal class BaseWriter<T> where T: PgBase
 	{
-		public Markdown md = new Markdown();
 		private static string typeName()
 		{
 			// get rid of the 'pg' prefix and convert to lower case
@@ -60,7 +64,7 @@ namespace MixERP.Net.Utilities.PgDoc.Generators
 		protected readonly string IndexFileName = string.Format("{0}s.html", typeName());
 		protected readonly string DirectoryOutputPath = string.Format("{0}s", typeName());
 
-		
+
 		virtual protected string BuildDocumentation(string content, IEnumerable<T> list, IEnumerable<string> matches) {
 			return StaticWriter.FillMaster(string.Format("{0}s", typeName()), Parser<T>.Parse(content, matches, list));
 		}

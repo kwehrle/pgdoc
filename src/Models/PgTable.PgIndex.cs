@@ -69,12 +69,12 @@ namespace MixERP.Net.Utilities.PgDoc.Models
 					.Replace("{{idx.indexSchema}}", SchemaName)
 					.Replace("{{idx.type}}", Type)
 					.Replace("{{idx.indicator}}", indicator)
-					.Replace("{{idx.owner}}", Owner)
+					.Replace("{{idx.owner}}", Program.omitOwner.Equals(Owner) ? Program.OwnerSubstitute : Owner)
 					.Replace("{{idx.definition}}", Definition)
 					.Replace("{{idx.accessMethod}}", AccessMethod)
 					.Replace("{{idx.isClustered}}", IsClustered.ToString())
 					.Replace("{{idx.isValid}}", IsValid.ToString())
-					.Replace("{{idx.description}}", md.Transform(Description));
+					.Replace("{{idx.description}}", PgBase.TransformMarkDown(Description));
 
 			}
 		}

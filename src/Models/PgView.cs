@@ -48,11 +48,11 @@ namespace MixERP.Net.Utilities.PgDoc.Models
 				.Replace("{{view.name}}", Name)
                 .Replace("{{view.schema}}", SchemaName)
                 .Replace("{{view.rowNumber}}", RowNumber.ToString())
-                .Replace("{{view.owner}}", Owner)
-                .Replace("{{view.tablespace}}", Tablespace)
+				.Replace("{{view.owner}}", Program.omitOwner.Equals(Owner) ? Program.OwnerSubstitute : Owner)
+				.Replace("{{view.tablespace}}", Program.omitTablespace.Equals(Tablespace) ? Program.TablespaceSubstitute : Tablespace)
 				.Replace("{{view.isMaterialized}}", IsMaterialized ? "YES" : "NO")
                 .Replace("{{view.definition}}", Definition)
-				.Replace("{{view.description}}", md.Transform(Description)
+				.Replace("{{view.description}}", PgBase.TransformMarkDown(Description)
 				);
 		}
     }

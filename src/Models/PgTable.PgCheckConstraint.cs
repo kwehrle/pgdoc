@@ -58,7 +58,7 @@ namespace MixERP.Net.Utilities.PgDoc.Models
 					.Replace("{{check.deferred}}", Deferred.ToString())
 					.Replace("{{check.isLocal}}", IsLocal.ToString())
 					.Replace("{{check.noInherit}}", NoInherit.ToString())
-					.Replace("{{check.description}}", md.Transform(Description));
+					.Replace("{{check.description}}", PgBase.TransformMarkDown(Description));
 			}
 		}
 	}
