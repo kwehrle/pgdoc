@@ -1,4 +1,5 @@
 # PgDoc PostgreSQL Documenter
+
 PgDoc creates beautiful database documentations from your PostgreSQL database. It is a small console application that runs
 on:
 
